@@ -1,22 +1,33 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
-#
-# This file is part of Dotclear 2 "Fake Me Up" plugin.
-#
-# Copyright (c) 2010 Bruno Hondelatte, and contributors. 
-# Many, many thanks to Olivier Meunier and the Dotclear Team.
-# Licensed under the GPL version 2.0 license.
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-#
-# -- END LICENSE BLOCK ------------------------------------
-if (!defined('DC_RC_PATH')) { return; }
+/**
+ * @brief Fake Me Up, an upgrade helper plugin for Dotclear 2
+ *
+ * @package Dotclear
+ * @subpackage Plugins
+ *
+ * @author Bruno Hondelatte, and contributors
+ *
+ * @copyright Bruno Hondelatte
+ * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
+if (!defined('DC_RC_PATH')) {
+    return;
+}
 
 $this->registerModule(
-	/* Name */			"Fake Me Up",
-	/* Description*/		"Fakes Dotclear digest to force automatic updates",
-	/* Author */			"Bruno Hondelatte",
-	/* Version */			'1.5',
-	/* Permissions */		'admin'
-);
+    'Fake Me Up',
+    'Fakes Dotclear digest to force automatic updates',
+    'Bruno Hondelatte',
+    '1.6',
+    [
+        'requires'    => [['core', '2.24']],
+        'permissions' => dcCore::app()->auth->makePermissions([
+            dcAuth::PERMISSION_ADMIN,
+        ]),
+        'type' => 'plugin',
 
-?>
+        'details'    => 'https://open-time.net/?q=fakemup',
+        'support'    => 'https://github.com/franck-paul/fakemup',
+        'repository' => 'https://raw.githubusercontent.com/franck-paul/fakemup/master/dcstore.xml',
+    ]
+);
