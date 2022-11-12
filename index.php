@@ -24,6 +24,9 @@ class adminFakeMeUp
      */
     public static function init()
     {
+        // Super admin only
+        dcPage::checkSuper();
+
         dcCore::app()->admin->changes = [
             'same'    => [],
             'changed' => [],

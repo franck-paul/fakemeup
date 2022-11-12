@@ -20,11 +20,8 @@ $this->registerModule(
     'Bruno Hondelatte',
     '1.6',
     [
-        'requires'    => [['core', '2.24']],
-        'permissions' => dcCore::app()->auth->makePermissions([
-            dcAuth::PERMISSION_ADMIN,
-        ]),
-        'type' => 'plugin',
+        'requires' => [['core', '2.24']],
+        'type'     => 'plugin',
 
         'details'    => 'https://open-time.net/?q=fakemup',
         'support'    => 'https://github.com/franck-paul/fakemup',
