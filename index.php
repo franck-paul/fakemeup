@@ -229,7 +229,7 @@ class adminFakeMeUp
      *
      * @return     bool|string  False on error, zip URI on success
      */
-    private function backup(array $changes)
+    private static function backup(array $changes)
     {
         if (preg_match('#^http(s)?://#', dcCore::app()->blog->settings->system->public_url)) {
             $public_root = dcCore::app()->blog->settings->system->public_url;
