@@ -81,8 +81,8 @@ class adminFakeMeUp
         '<body>' .
         dcPage::breadcrumb(
             [
-                html::escapeHTML(dcCore::app()->blog->name) => '',
-                __('Fake Me Up')                            => '',
+                __('System')             => '',
+                __('Fake Me Up')         => '',
             ]
         ) .
         dcPage::notices();
