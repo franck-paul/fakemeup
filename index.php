@@ -10,6 +10,9 @@
  * @copyright Bruno Hondelatte
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Dotclear\Helper\File\Path;
+
 if (!defined('DC_CONTEXT_ADMIN')) {
     return;
 }
@@ -32,7 +35,7 @@ class adminFakeMeUp
             'changed' => [],
             'removed' => [],
         ];
-        dcCore::app()->admin->helpus = l10n::getFilePath(dirname(__FILE__) . '/locales', 'helpus.html', dcCore::app()->lang);
+        dcCore::app()->admin->helpus = l10n::getFilePath(__DIR__ . '/locales', 'helpus.html', dcCore::app()->lang);
     }
 
     /**
@@ -81,8 +84,8 @@ class adminFakeMeUp
         '<body>' .
         dcPage::breadcrumb(
             [
-                __('System')             => '',
-                __('Fake Me Up')         => '',
+                __('System')     => '',
+                __('Fake Me Up') => '',
             ]
         ) .
         dcPage::notices();
@@ -101,13 +104,13 @@ class adminFakeMeUp
                 '<p><a href="update.php">' . __('Update Dotclear') . '</a></p>' .
                 '</div>';
             } elseif (isset($_POST['disclaimer_ok'])) {
-                if (count(dcCore::app()->admin->changes['changed']) == 0 && count(dcCore::app()->admin->changes['removed']) == 0) {
+                if ((is_countable(dcCore::app()->admin->changes['changed']) ? count(dcCore::app()->admin->changes['changed']) : 0) == 0 && (is_countable(dcCore::app()->admin->changes['removed']) ? count(dcCore::app()->admin->changes['removed']) : 0) == 0) {
                     echo
                     '<p class="message">' . __('No changed filed have been found, nothing to do!') . '</p>';
                 } else {
                     echo
                     '<div class="message">';
-                    if (count(dcCore::app()->admin->changes['changed']) != 0) {
+                    if ((is_countable(dcCore::app()->admin->changes['changed']) ? count(dcCore::app()->admin->changes['changed']) : 0) != 0) {
                         echo
                         '<p>' . __('The following files will have their checksum faked:') . '</p>' .
                         '<ul>';
@@ -117,7 +120,7 @@ class adminFakeMeUp
                         echo
                         '</ul>';
                     }
-                    if (count(dcCore::app()->admin->changes['removed']) != 0) {
+                    if ((is_countable(dcCore::app()->admin->changes['removed']) ? count(dcCore::app()->admin->changes['removed']) : 0) != 0) {
                         echo
                         '<p>' . __('The following files digests will have their checksum cleaned:') . '</p>' .
                         '<ul>';
@@ -145,7 +148,7 @@ class adminFakeMeUp
                     '<p><input type="submit" name="confirm" id="confirm" value="' . __('Continue') . '"/></p>' .
                     '</form></div>';
                 } else {
-                    $disclaimer = l10n::getFilePath(dirname(__FILE__) . '/locales', 'disclaimer.html', dcCore::app()->lang);
+                    $disclaimer = l10n::getFilePath(__DIR__ . '/locales', 'disclaimer.html', dcCore::app()->lang);
                     echo
                     '<p class="error">' . __('Please read carefully the following disclaimer before proceeding!') . '</p>' .
                     '<div class="message">' . file_get_contents($disclaimer) .
@@ -231,10 +234,10 @@ class adminFakeMeUp
      */
     private static function backup(array $changes)
     {
-        if (preg_match('#^http(s)?://#', dcCore::app()->blog->settings->system->public_url)) {
+        if (preg_match('#^http(s)?://#', (string) dcCore::app()->blog->settings->system->public_url)) {
             $public_root = dcCore::app()->blog->settings->system->public_url;
         } else {
-            $public_root = dcCore::app()->blog->host . path::clean(dcCore::app()->blog->settings->system->public_url);
+            $public_root = dcCore::app()->blog->host . Path::clean(dcCore::app()->blog->settings->system->public_url);
         }
         $zip_name      = sprintf('fmu_backup_%s.zip', date('YmdHis'));
         $zip_file      = sprintf('%s/%s', dcCore::app()->blog->public_path, $zip_name);
@@ -243,7 +246,7 @@ class adminFakeMeUp
 
         $c_data = 'Fake Me Up Checksum file - ' . date('d/m/Y H:i:s') . "\n\n" .
             'Dotclear version : ' . DC_VERSION . "\n\n";
-        if (count($changes['removed'])) {
+        if (is_countable($changes['removed']) ? count($changes['removed']) : 0) {
             $c_data .= "== Removed files ==\n";
             foreach ($changes['removed'] as $k => $v) {
                 $c_data .= sprintf(" * %s\n", $k);
@@ -258,7 +261,7 @@ class adminFakeMeUp
             return false;
         }
         $b_zip = new fileZip($b_fp);
-        if (count($changes['changed'])) {
+        if (is_countable($changes['changed']) ? count($changes['changed']) : 0) {
             $c_data .= "== Invalid checksum files ==\n";
             foreach ($changes['changed'] as $k => $v) {
                 $name = substr($k, 2);

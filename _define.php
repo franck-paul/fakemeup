@@ -10,17 +10,13 @@
  * @copyright Bruno Hondelatte
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_RC_PATH')) {
-    return;
-}
-
 $this->registerModule(
     'Fake Me Up',
     'Fakes Dotclear digest to force automatic updates',
     'Bruno Hondelatte',
     '1.7',
     [
-        'requires' => [['core', '2.24']],
+        'requires' => [['core', '2.26']],
         'type'     => 'plugin',
 
         'details'    => 'https://open-time.net/?q=fakemup',
