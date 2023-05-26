@@ -13,68 +13,50 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../git-plugins/fakemeup/src/Backend.php:37
-#: ../git-plugins/fakemeup/src/Manage.php:105
-#: ../git-plugins/fakemeup/src/Manage.php:110
 msgid "Fake Me Up"
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:109
 msgid "System"
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:122
 msgid "The updates have been performed."
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:132
 msgid "Update Dotclear"
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:139
 msgid "No changed filed have been found, nothing to do!"
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:151
 msgid "The following files will have their checksum faked:"
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:165
 msgid "The following files digests will have their checksum cleaned:"
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:179
 msgid "Still ok to continue"
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:190
 msgid "Fake Me Up has already been run once."
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:199
 msgid "Remove the backup digest file, I want to play again"
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:202
-#: ../git-plugins/fakemeup/src/Manage.php:226
 msgid "Continue"
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:211
 msgid "Please read carefully the following disclaimer before proceeding!"
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:223
 msgid "I have read and understood the disclaimer and wish to continue anyway."
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:254
 msgid "Unable to read digests file."
 msgstr ""
 
-#: ../git-plugins/fakemeup/src/Manage.php:287
 msgid "Invalid digests file."
 msgstr ""

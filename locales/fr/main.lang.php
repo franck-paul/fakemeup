@@ -12,6 +12,7 @@
 use Dotclear\Helper\L10n;
 
 L10n::$locales['Fake Me Up'] = '';
+L10n::$locales['System'] = '';
 L10n::$locales['The updates have been performed.'] = 'Les mises à jour ont été faites.';
 L10n::$locales['Update Dotclear'] = 'Mettre à jour Dotclear';
 L10n::$locales['No changed filed have been found, nothing to do!'] = 'Pas de fichier modifié trouvé. Rien à faire !';
@@ -23,3 +24,5 @@ L10n::$locales['Remove the backup digest file, I want to play again'] = 'Supprim
 L10n::$locales['Continue'] = 'Continuer';
 L10n::$locales['Please read carefully the following disclaimer before proceeding!'] = 'Merci de lire avec attention la mise en garde suivante avant de continuer !';
 L10n::$locales['I have read and understood the disclaimer and wish to continue anyway.'] = 'J\'ai lu et j\'ai compris la mise en garde, je souhaite continuer quand même.';
+L10n::$locales['Unable to read digests file.'] = '';
+L10n::$locales['Invalid digests file.'] = '';
