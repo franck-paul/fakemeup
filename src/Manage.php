@@ -128,7 +128,7 @@ class Manage extends dcNsProcess
                         $item,
                         (new Para())->items([
                             (new Link())
-                                ->href('update.php')
+                                ->href(dcCore::app()->adminurl->get('admin.update'))
                                 ->text(__('Update Dotclear')),
                         ]),
                     ])
