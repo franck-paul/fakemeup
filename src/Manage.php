@@ -33,6 +33,7 @@ use Exception;
 
 class Manage extends dcNsProcess
 {
+    protected static $init = false; /** @deprecated since 2.27 */
     // Constants
     private const DC_DIGESTS_BACKUP = DC_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'digests.bak';
 
