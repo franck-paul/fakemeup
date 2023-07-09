@@ -39,7 +39,7 @@ class Manage extends dcNsProcess
     // Properties
     private static array $changes = [];
     private static string $helpus = '';
-    private static string $uri    = '';
+    private static $uri           = '';
     protected static $init        = false; /** @deprecated since 2.27 */
 
     /**
