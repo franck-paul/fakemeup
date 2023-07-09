@@ -33,9 +33,14 @@ use Exception;
 
 class Manage extends dcNsProcess
 {
-    protected static $init = false; /** @deprecated since 2.27 */
     // Constants
     private const DC_DIGESTS_BACKUP = DC_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'digests.bak';
+
+    // Properties
+    private static array $changes = [];
+    private static string $helpus = '';
+    private static string $uri    = '';
+    protected static $init        = false; /** @deprecated since 2.27 */
 
     /**
      * Initializes the page.
@@ -56,12 +61,12 @@ class Manage extends dcNsProcess
             return false;
         }
 
-        dcCore::app()->admin->changes = [
+        self::$changes = [
             'same'    => [],
             'changed' => [],
             'removed' => [],
         ];
-        dcCore::app()->admin->helpus = L10n::getFilePath(My::path() . '/locales', 'helpus.html', dcCore::app()->lang);
+        self::$helpus = L10n::getFilePath(My::path() . '/locales', 'helpus.html', dcCore::app()->lang) ?: '';
 
         if (isset($_POST['erase_backup'])) {
             @unlink(self::DC_DIGESTS_BACKUP);
@@ -75,7 +80,7 @@ class Manage extends dcNsProcess
                     $arr[$k] = $v['new'];
                 }
                 ksort($arr);
-                dcCore::app()->admin->changes = $changes;
+                self::$changes = $changes;
 
                 $digest = '';
                 foreach ($arr as $k => $v) {
@@ -83,9 +88,9 @@ class Manage extends dcNsProcess
                 }
                 rename(DC_DIGESTS, self::DC_DIGESTS_BACKUP);
                 file_put_contents(DC_DIGESTS, $digest);
-                dcCore::app()->admin->uri = self::backup(dcCore::app()->admin->changes);
+                self::$uri = self::backup(self::$changes);
             } elseif (isset($_POST['disclaimer_ok'])) {
-                dcCore::app()->admin->changes = self::check(DC_ROOT, DC_DIGESTS);
+                self::$changes = self::check(DC_ROOT, DC_DIGESTS);
             }
         } catch (Exception $e) {
             dcCore::app()->error->add($e->getMessage());
@@ -116,8 +121,8 @@ class Manage extends dcNsProcess
         // Form
         if (!dcCore::app()->error->flag()) {
             if (isset($_POST['override'])) {
-                if (dcCore::app()->admin->uri !== false) {
-                    $item = (new Text(null, sprintf(file_get_contents(dcCore::app()->admin->helpus), dcCore::app()->admin->uri, 'fakemeup@dotclear.org')));
+                if (self::$uri !== false) {
+                    $item = (new Text(null, sprintf(file_get_contents(self::$helpus), self::$uri, 'fakemeup@dotclear.org')));
                 } else {
                     $item = (new Para())->items([
                         (new Text(null, __('The updates have been performed.'))),
@@ -135,7 +140,7 @@ class Manage extends dcNsProcess
                     ])
                 ->render();
             } elseif (isset($_POST['disclaimer_ok'])) {
-                if ((is_countable(dcCore::app()->admin->changes['changed']) ? count(dcCore::app()->admin->changes['changed']) : 0) == 0 && (is_countable(dcCore::app()->admin->changes['removed']) ? count(dcCore::app()->admin->changes['removed']) : 0) == 0) {
+                if ((is_countable(self::$changes['changed']) ? count(self::$changes['changed']) : 0) == 0 && (is_countable(self::$changes['removed']) ? count(self::$changes['removed']) : 0) == 0) {
                     echo (new Para())->class('message')->items([
                         (new Text(null, __('No changed filed have been found, nothing to do!'))),
                     ])
@@ -143,8 +148,8 @@ class Manage extends dcNsProcess
                 } else {
                     $changed       = [];
                     $block_changed = '';
-                    if ((is_countable(dcCore::app()->admin->changes['changed']) ? count(dcCore::app()->admin->changes['changed']) : 0) != 0) {
-                        foreach (dcCore::app()->admin->changes['changed'] as $k => $v) {
+                    if ((is_countable(self::$changes['changed']) ? count(self::$changes['changed']) : 0) != 0) {
+                        foreach (self::$changes['changed'] as $k => $v) {
                             $changed[] = (new Text('li', sprintf('%s [old:%s, new:%s]', $k, $v['old'], $v['new'])));
                         }
                         $block_changed = (new Div())->class('message')->items([
@@ -157,8 +162,8 @@ class Manage extends dcNsProcess
                     }
                     $removed       = [];
                     $block_removed = '';
-                    if ((is_countable(dcCore::app()->admin->changes['removed']) ? count(dcCore::app()->admin->changes['removed']) : 0) != 0) {
-                        foreach (dcCore::app()->admin->changes['removed'] as $k => $v) {
+                    if ((is_countable(self::$changes['removed']) ? count(self::$changes['removed']) : 0) != 0) {
+                        foreach (self::$changes['removed'] as $k => $v) {
                             $removed[] = (new Text('li', $k));
                         }
                         $block_removed = (new Div())->class('message')->items([
