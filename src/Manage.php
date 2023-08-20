@@ -15,8 +15,9 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\fakemeup;
 
 use dcCore;
-use dcNsProcess;
-use dcPage;
+use Dotclear\Core\Backend\Notices;
+use Dotclear\Core\Backend\Page;
+use Dotclear\Core\Process;
 use Dotclear\Helper\File\Path;
 use Dotclear\Helper\File\Zip\Zip;
 use Dotclear\Helper\Html\Form\Checkbox;
@@ -31,7 +32,7 @@ use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\L10n;
 use Exception;
 
-class Manage extends dcNsProcess
+class Manage extends Process
 {
     // Constants
     private const DC_DIGESTS_BACKUP = DC_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'digests.bak';
@@ -40,16 +41,13 @@ class Manage extends dcNsProcess
     private static array $changes = [];
     private static string $helpus = '';
     private static $uri           = '';
-    protected static $init        = false; /** @deprecated since 2.27 */
 
     /**
      * Initializes the page.
      */
     public static function init(): bool
     {
-        static::$init = My::checkContext(My::MANAGE);
-
-        return static::$init;
+        return self::status(My::checkContext(My::MANAGE));
     }
 
     /**
@@ -57,7 +55,7 @@ class Manage extends dcNsProcess
      */
     public static function process(): bool
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return false;
         }
 
@@ -104,19 +102,19 @@ class Manage extends dcNsProcess
      */
     public static function render(): void
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return;
         }
 
-        dcPage::openModule(__('Fake Me Up'));
+        Page::openModule(__('Fake Me Up'));
 
-        echo dcPage::breadcrumb(
+        echo Page::breadcrumb(
             [
                 __('System')     => '',
                 __('Fake Me Up') => '',
             ]
         );
-        echo dcPage::notices();
+        echo Notices::getNotices();
 
         // Form
         if (!dcCore::app()->error->flag()) {
@@ -134,7 +132,7 @@ class Manage extends dcNsProcess
                         $item,
                         (new Para())->items([
                             (new Link())
-                                ->href(dcCore::app()->adminurl->get('admin.update'))
+                                ->href(dcCore::app()->admin->url->get('admin.update'))
                                 ->text(__('Update Dotclear')),
                         ]),
                     ])
@@ -239,7 +237,7 @@ class Manage extends dcNsProcess
             }
         }
 
-        dcPage::closeModule();
+        Page::closeModule();
     }
 
     // Private helper methods
