@@ -40,14 +40,4 @@ class My extends MyPlugin
             default => null
         };
     }
-
-    /**
-     * Return URL regexp scheme cope by the plugin
-     *
-     * @return     string
-     */
-    public static function urlScheme(): string
-    {
-        return '/' . preg_quote(dcCore::app()->admin->url->get('admin.plugin.' . self::id())) . '(&.*)?$/';
-    }
 }

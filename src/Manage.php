@@ -23,7 +23,6 @@ use Dotclear\Helper\File\Zip\Zip;
 use Dotclear\Helper\Html\Form\Checkbox;
 use Dotclear\Helper\Html\Form\Div;
 use Dotclear\Helper\Html\Form\Form;
-use Dotclear\Helper\Html\Form\Hidden;
 use Dotclear\Helper\Html\Form\Label;
 use Dotclear\Helper\Html\Form\Link;
 use Dotclear\Helper\Html\Form\Para;
@@ -106,7 +105,7 @@ class Manage extends Process
             return;
         }
 
-        Page::openModule(__('Fake Me Up'));
+        Page::openModule(My::name());
 
         echo Page::breadcrumb(
             [
@@ -181,8 +180,9 @@ class Manage extends Process
                             ->method('post')
                             ->fields([
                                 (new Submit(['confirm'], __('Still ok to continue'))),
-                                (new Hidden(['override'], (string) 1)),
-                                dcCore::app()->formNonce(false),
+                                ... My::hiddenFields([
+                                    'override' => (string) 1,
+                                ]),
                             ]),
                     ])
                     ->render();
@@ -204,7 +204,7 @@ class Manage extends Process
                                 ]),
                                 (new Para())->items([
                                     (new Submit(['confirm'], __('Continue'))),
-                                    dcCore::app()->formNonce(false),
+                                    ... My::hiddenFields(),
                                 ]),
                             ]),
                     ])
@@ -228,7 +228,7 @@ class Manage extends Process
                                 ]),
                                 (new Para())->items([
                                     (new Submit(['confirm'], __('Continue'))),
-                                    dcCore::app()->formNonce(false),
+                                    ... My::hiddenFields(),
                                 ]),
                             ]),
                     ])
