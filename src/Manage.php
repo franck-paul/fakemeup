@@ -37,9 +37,15 @@ class Manage extends Process
     private const DC_DIGESTS_BACKUP = DC_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'digests.bak';
 
     // Properties
+
+    /**
+     * @var array<string, array<string, mixed>>
+     */
     private static array $changes = [];
+
     private static string $helpus = '';
-    private static $uri           = '';
+
+    private static string|bool $uri = '';
 
     /**
      * Initializes the page.
@@ -131,13 +137,13 @@ class Manage extends Process
                         $item,
                         (new Para())->items([
                             (new Link())
-                                ->href(dcCore::app()->admin->url->get('admin.update'))
+                                ->href(dcCore::app()->adminurl->get('admin.update'))
                                 ->text(__('Update Dotclear')),
                         ]),
                     ])
                 ->render();
             } elseif (isset($_POST['disclaimer_ok'])) {
-                if ((is_countable(self::$changes['changed']) ? count(self::$changes['changed']) : 0) == 0 && (is_countable(self::$changes['removed']) ? count(self::$changes['removed']) : 0) == 0) {
+                if (count(self::$changes['changed']) === 0 && count(self::$changes['removed']) === 0) {
                     echo (new Para())->class('message')->items([
                         (new Text(null, __('No changed filed have been found, nothing to do!'))),
                     ])
@@ -145,7 +151,7 @@ class Manage extends Process
                 } else {
                     $changed       = [];
                     $block_changed = '';
-                    if ((is_countable(self::$changes['changed']) ? count(self::$changes['changed']) : 0) != 0) {
+                    if (count(self::$changes['changed']) !== 0) {
                         foreach (self::$changes['changed'] as $k => $v) {
                             $changed[] = (new Text('li', sprintf('%s [old:%s, new:%s]', $k, $v['old'], $v['new'])));
                         }
@@ -159,7 +165,7 @@ class Manage extends Process
                     }
                     $removed       = [];
                     $block_removed = '';
-                    if ((is_countable(self::$changes['removed']) ? count(self::$changes['removed']) : 0) != 0) {
+                    if (count(self::$changes['removed']) !== 0) {
                         foreach (self::$changes['removed'] as $k => $v) {
                             $removed[] = (new Text('li', $k));
                         }
@@ -250,7 +256,7 @@ class Manage extends Process
      *
      * @throws     Exception
      *
-     * @return     array
+     * @return     array<string, mixed>
      */
     private static function check(string $root, string $digests_file): array
     {
@@ -301,11 +307,11 @@ class Manage extends Process
     /**
      * Backup digest
      *
-     * @param      array        $changes  The changes
+     * @param      array<string, mixed>        $changes  The changes
      *
      * @return     bool|string  False on error, zip URI on success
      */
-    private static function backup(array $changes)
+    private static function backup(array $changes): bool|string
     {
         if (preg_match('#^http(s)?://#', (string) dcCore::app()->blog->settings->system->public_url)) {
             $public_root = dcCore::app()->blog->settings->system->public_url;
