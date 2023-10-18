@@ -125,7 +125,7 @@ class Manage extends Process
         if (!dcCore::app()->error->flag()) {
             if (isset($_POST['override'])) {
                 if (self::$uri !== false) {
-                    $item = (new Text(null, sprintf(file_get_contents(self::$helpus), self::$uri, 'fakemeup@dotclear.org')));
+                    $item = (new Text(null, sprintf((string) file_get_contents(self::$helpus), self::$uri, 'fakemeup@dotclear.org')));
                 } else {
                     $item = (new Para())->items([
                         (new Text(null, __('The updates have been performed.'))),
@@ -222,7 +222,7 @@ class Manage extends Process
                     ])
                     ->render();
                     echo (new Div())->class('message')->items([
-                        (new Text(null, file_get_contents($disclaimer))),
+                        (new Text(null, (string) file_get_contents((string) $disclaimer))),
                         (new Form('frm-disclaimer'))
                             ->action(dcCore::app()->admin->getPageURL())
                             ->method('post')
@@ -271,24 +271,26 @@ class Manage extends Process
         $same    = [];
         $removed = [];
 
-        foreach ($contents as $digest) {
-            if (!preg_match('#^([\da-f]{32})\s+(.+?)$#', $digest, $m)) {
-                continue;
-            }
-
-            $md5      = $m[1];
-            $filename = $root . '/' . $m[2];
-
-            # Invalid checksum
-            if (is_readable($filename)) {
-                $md5_new = md5_file($filename);
-                if ($md5 == $md5_new) {
-                    $same[$m[2]] = $md5;
-                } else {
-                    $changed[$m[2]] = ['old' => $md5,'new' => $md5_new];
+        if ($contents !== false) {
+            foreach ($contents as $digest) {
+                if (!preg_match('#^([\da-f]{32})\s+(.+?)$#', $digest, $m)) {
+                    continue;
                 }
-            } else {
-                $removed[$m[2]] = true;
+
+                $md5      = $m[1];
+                $filename = $root . '/' . $m[2];
+
+                # Invalid checksum
+                if (is_readable($filename)) {
+                    $md5_new = md5_file($filename);
+                    if ($md5 == $md5_new) {
+                        $same[$m[2]] = $md5;
+                    } else {
+                        $changed[$m[2]] = ['old' => $md5,'new' => $md5_new];
+                    }
+                } else {
+                    $removed[$m[2]] = true;
+                }
             }
         }
 
