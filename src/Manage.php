@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\fakemeup;
 
 use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Core\Process;
@@ -315,15 +316,15 @@ class Manage extends Process
      */
     private static function backup(array $changes): bool|string
     {
-        if (preg_match('#^http(s)?://#', (string) dcCore::app()->blog->settings->system->public_url)) {
-            $public_root = dcCore::app()->blog->settings->system->public_url;
+        if (preg_match('#^http(s)?://#', (string) App::blog()->settings()->system->public_url)) {
+            $public_root = App::blog()->settings()->system->public_url;
         } else {
-            $public_root = dcCore::app()->blog->host . Path::clean(dcCore::app()->blog->settings->system->public_url);
+            $public_root = App::blog()->host() . Path::clean(App::blog()->settings()->system->public_url);
         }
         $zip_name      = sprintf('fmu_backup_%s.zip', date('YmdHis'));
-        $zip_file      = sprintf('%s/%s', dcCore::app()->blog->public_path, $zip_name);
+        $zip_file      = sprintf('%s/%s', App::blog()->publicPath(), $zip_name);
         $zip_uri       = sprintf('%s/%s', $public_root, $zip_name);
-        $checksum_file = sprintf('%s/fmu_checksum_%s.txt', dcCore::app()->blog->public_path, date('Ymd'));
+        $checksum_file = sprintf('%s/fmu_checksum_%s.txt', App::blog()->publicPath(), date('Ymd'));
 
         $c_data = 'Fake Me Up Checksum file - ' . date('d/m/Y H:i:s') . "\n\n" .
             'Dotclear version : ' . DC_VERSION . "\n\n";
