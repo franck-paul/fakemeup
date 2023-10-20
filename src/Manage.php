@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\fakemeup;
 
-use dcCore;
 use Dotclear\App;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Core\Backend\Page;
@@ -70,7 +69,7 @@ class Manage extends Process
             'changed' => [],
             'removed' => [],
         ];
-        self::$helpus = L10n::getFilePath(My::path() . '/locales', 'helpus.html', dcCore::app()->lang) ?: '';
+        self::$helpus = L10n::getFilePath(My::path() . '/locales', 'helpus.html', App::lang()->getLang()) ?: '';
 
         if (isset($_POST['erase_backup'])) {
             @unlink(self::DC_DIGESTS_BACKUP);
@@ -97,7 +96,7 @@ class Manage extends Process
                 self::$changes = self::check(DC_ROOT, DC_DIGESTS);
             }
         } catch (Exception $e) {
-            dcCore::app()->error->add($e->getMessage());
+            App::error()->add($e->getMessage());
         }
 
         return true;
@@ -123,7 +122,7 @@ class Manage extends Process
         echo Notices::getNotices();
 
         // Form
-        if (!dcCore::app()->error->flag()) {
+        if (!App::error()->flag()) {
             if (isset($_POST['override'])) {
                 if (self::$uri !== false) {
                     $item = (new Text(null, sprintf((string) file_get_contents(self::$helpus), self::$uri, 'fakemeup@dotclear.org')));
@@ -138,7 +137,7 @@ class Manage extends Process
                         $item,
                         (new Para())->items([
                             (new Link())
-                                ->href(dcCore::app()->adminurl->get('admin.update'))
+                                ->href(App::backend()->url()->get('admin.update'))
                                 ->text(__('Update Dotclear')),
                         ]),
                     ])
@@ -183,7 +182,7 @@ class Manage extends Process
                         (new Text(null, $block_changed)),
                         (new Text(null, $block_removed)),
                         (new Form('frm-override'))
-                            ->action(dcCore::app()->admin->getPageURL())
+                            ->action(App::backend()->getPageURL())
                             ->method('post')
                             ->fields([
                                 (new Submit(['confirm'], __('Still ok to continue'))),
@@ -201,7 +200,7 @@ class Manage extends Process
                             (new Text(null, __('Fake Me Up has already been run once.'))),
                         ]),
                         (new Form('frm-erase'))
-                            ->action(dcCore::app()->admin->getPageURL())
+                            ->action(App::backend()->getPageURL())
                             ->method('post')
                             ->fields([
                                 (new Para())->items([
@@ -217,7 +216,7 @@ class Manage extends Process
                     ])
                     ->render();
                 } else {
-                    $disclaimer = L10n::getFilePath(My::path() . '/locales', 'disclaimer.html', dcCore::app()->lang);
+                    $disclaimer = L10n::getFilePath(My::path() . '/locales', 'disclaimer.html', App::lang()->getLang());
                     echo (new Para())->class('error')->items([
                         (new Text(null, __('Please read carefully the following disclaimer before proceeding!'))),
                     ])
@@ -225,7 +224,7 @@ class Manage extends Process
                     echo (new Div())->class('message')->items([
                         (new Text(null, (string) file_get_contents((string) $disclaimer))),
                         (new Form('frm-disclaimer'))
-                            ->action(dcCore::app()->admin->getPageURL())
+                            ->action(App::backend()->getPageURL())
                             ->method('post')
                             ->fields([
                                 (new Para())->items([
