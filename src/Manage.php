@@ -33,9 +33,6 @@ use Exception;
 
 class Manage extends Process
 {
-    // Constants
-    private const DC_DIGESTS_BACKUP = DC_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'digests.bak';
-
     // Properties
 
     /**
@@ -71,13 +68,15 @@ class Manage extends Process
         ];
         self::$helpus = L10n::getFilePath(My::path() . '/locales', 'helpus.html', App::lang()->getLang()) ?: '';
 
+        $backup = App::config()->dotclearRoot() . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'digests.bak';
+
         if (isset($_POST['erase_backup'])) {
-            @unlink(self::DC_DIGESTS_BACKUP);
+            @unlink($backup);
         }
 
         try {
             if (isset($_POST['override'])) {
-                $changes = self::check(DC_ROOT, DC_DIGESTS);
+                $changes = self::check(App::config()->dotclearRoot(), App::config()->digestsRoot());
                 $arr     = $changes['same'];
                 foreach ($changes['changed'] as $k => $v) {
                     $arr[$k] = $v['new'];
@@ -89,11 +88,11 @@ class Manage extends Process
                 foreach ($arr as $k => $v) {
                     $digest .= sprintf("%s  %s\n", $v, $k);
                 }
-                rename(DC_DIGESTS, self::DC_DIGESTS_BACKUP);
-                file_put_contents(DC_DIGESTS, $digest);
+                rename(App::config()->digestsRoot(), $backup);
+                file_put_contents(App::config()->digestsRoot(), $digest);
                 self::$uri = self::backup(self::$changes);
             } elseif (isset($_POST['disclaimer_ok'])) {
-                self::$changes = self::check(DC_ROOT, DC_DIGESTS);
+                self::$changes = self::check(App::config()->dotclearRoot(), App::config()->digestsRoot());
             }
         } catch (Exception $e) {
             App::error()->add($e->getMessage());
@@ -120,6 +119,8 @@ class Manage extends Process
             ]
         );
         echo Notices::getNotices();
+
+        $backup = App::config()->dotclearRoot() . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'digests.bak';
 
         // Form
         if (!App::error()->flag()) {
@@ -194,7 +195,7 @@ class Manage extends Process
                     ->render();
                 }
             } else {
-                if (file_exists(self::DC_DIGESTS_BACKUP)) {
+                if (file_exists($backup)) {
                     echo (new Div())->class('error')->items([
                         (new Para())->items([
                             (new Text(null, __('Fake Me Up has already been run once.'))),
@@ -326,7 +327,7 @@ class Manage extends Process
         $checksum_file = sprintf('%s/fmu_checksum_%s.txt', App::blog()->publicPath(), date('Ymd'));
 
         $c_data = 'Fake Me Up Checksum file - ' . date('d/m/Y H:i:s') . "\n\n" .
-            'Dotclear version : ' . DC_VERSION . "\n\n";
+            'Dotclear version : ' . App::config()->dotclearVersion() . "\n\n";
         if (is_countable($changes['removed']) ? count($changes['removed']) : 0) {
             $c_data .= "== Removed files ==\n";
             foreach ($changes['removed'] as $k => $v) {
@@ -351,7 +352,7 @@ class Manage extends Process
                 $c_data .= sprintf(" * %s [expected: %s ; current: %s]\n", $k, $v['old'], $v['new']);
 
                 try {
-                    $b_zip->addFile(DC_ROOT . '/' . $name, $name);
+                    $b_zip->addFile(App::config()->dotclearRoot() . '/' . $name, $name);
                 } catch (Exception $e) {
                     $c_data .= $e->getMessage();
                 }
