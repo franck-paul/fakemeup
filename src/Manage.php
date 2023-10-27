@@ -81,6 +81,7 @@ class Manage extends Process
                 foreach ($changes['changed'] as $k => $v) {
                     $arr[$k] = $v['new'];
                 }
+
                 ksort($arr);
                 self::$changes = $changes;
 
@@ -88,14 +89,15 @@ class Manage extends Process
                 foreach ($arr as $k => $v) {
                     $digest .= sprintf("%s  %s\n", $v, $k);
                 }
+
                 rename(App::config()->digestsRoot(), $backup);
                 file_put_contents(App::config()->digestsRoot(), $digest);
                 self::$uri = self::backup(self::$changes);
             } elseif (isset($_POST['disclaimer_ok'])) {
                 self::$changes = self::check(App::config()->dotclearRoot(), App::config()->digestsRoot());
             }
-        } catch (Exception $e) {
-            App::error()->add($e->getMessage());
+        } catch (Exception $exception) {
+            App::error()->add($exception->getMessage());
         }
 
         return true;
@@ -132,6 +134,7 @@ class Manage extends Process
                         (new Text(null, __('The updates have been performed.'))),
                     ]);
                 }
+
                 echo (new Div())
                     ->class('message')
                     ->items([
@@ -144,7 +147,7 @@ class Manage extends Process
                     ])
                 ->render();
             } elseif (isset($_POST['disclaimer_ok'])) {
-                if (count(self::$changes['changed']) === 0 && count(self::$changes['removed']) === 0) {
+                if (self::$changes['changed'] === [] && self::$changes['removed'] === []) {
                     echo (new Para())->class('message')->items([
                         (new Text(null, __('No changed filed have been found, nothing to do!'))),
                     ])
@@ -152,10 +155,11 @@ class Manage extends Process
                 } else {
                     $changed       = [];
                     $block_changed = '';
-                    if (count(self::$changes['changed']) !== 0) {
+                    if (self::$changes['changed'] !== []) {
                         foreach (self::$changes['changed'] as $k => $v) {
                             $changed[] = (new Text('li', sprintf('%s [old:%s, new:%s]', $k, $v['old'], $v['new'])));
                         }
+
                         $block_changed = (new Div())->class('message')->items([
                             (new Para())->items([
                                 (new Text(null, __('The following files will have their checksum faked:'))),
@@ -164,12 +168,14 @@ class Manage extends Process
                         ])
                         ->render();
                     }
+
                     $removed       = [];
                     $block_removed = '';
-                    if (count(self::$changes['removed']) !== 0) {
-                        foreach (self::$changes['removed'] as $k => $v) {
+                    if (self::$changes['removed'] !== []) {
+                        foreach (array_keys(self::$changes['removed']) as $k) {
                             $removed[] = (new Text('li', $k));
                         }
+
                         $block_removed = (new Div())->class('message')->items([
                             (new Para())->items([
                                 (new Text(null, __('The following files digests will have their checksum cleaned:'))),
@@ -194,53 +200,51 @@ class Manage extends Process
                     ])
                     ->render();
                 }
-            } else {
-                if (file_exists($backup)) {
-                    echo (new Div())->class('error')->items([
-                        (new Para())->items([
-                            (new Text(null, __('Fake Me Up has already been run once.'))),
+            } elseif (file_exists($backup)) {
+                echo (new Div())->class('error')->items([
+                    (new Para())->items([
+                        (new Text(null, __('Fake Me Up has already been run once.'))),
+                    ]),
+                    (new Form('frm-erase'))
+                        ->action(App::backend()->getPageURL())
+                        ->method('post')
+                        ->fields([
+                            (new Para())->items([
+                                (new Checkbox('erase_backup'))
+                                    ->value(1)
+                                    ->label((new Label(__('Remove the backup digest file, I want to play again'), Label::INSIDE_TEXT_AFTER))),
+                            ]),
+                            (new Para())->items([
+                                (new Submit(['confirm'], __('Continue'))),
+                                ... My::hiddenFields(),
+                            ]),
                         ]),
-                        (new Form('frm-erase'))
-                            ->action(App::backend()->getPageURL())
-                            ->method('post')
-                            ->fields([
-                                (new Para())->items([
-                                    (new Checkbox('erase_backup'))
-                                        ->value(1)
-                                        ->label((new Label(__('Remove the backup digest file, I want to play again'), Label::INSIDE_TEXT_AFTER))),
-                                ]),
-                                (new Para())->items([
-                                    (new Submit(['confirm'], __('Continue'))),
-                                    ... My::hiddenFields(),
-                                ]),
+                ])
+                ->render();
+            } else {
+                $disclaimer = L10n::getFilePath(My::path() . '/locales', 'disclaimer.html', App::lang()->getLang());
+                echo (new Para())->class('error')->items([
+                    (new Text(null, __('Please read carefully the following disclaimer before proceeding!'))),
+                ])
+                ->render();
+                echo (new Div())->class('message')->items([
+                    (new Text(null, (string) file_get_contents((string) $disclaimer))),
+                    (new Form('frm-disclaimer'))
+                        ->action(App::backend()->getPageURL())
+                        ->method('post')
+                        ->fields([
+                            (new Para())->items([
+                                (new Checkbox('disclaimer_ok'))
+                                    ->value(1)
+                                    ->label((new Label(__('I have read and understood the disclaimer and wish to continue anyway.'), Label::INSIDE_TEXT_AFTER))),
                             ]),
-                    ])
-                    ->render();
-                } else {
-                    $disclaimer = L10n::getFilePath(My::path() . '/locales', 'disclaimer.html', App::lang()->getLang());
-                    echo (new Para())->class('error')->items([
-                        (new Text(null, __('Please read carefully the following disclaimer before proceeding!'))),
-                    ])
-                    ->render();
-                    echo (new Div())->class('message')->items([
-                        (new Text(null, (string) file_get_contents((string) $disclaimer))),
-                        (new Form('frm-disclaimer'))
-                            ->action(App::backend()->getPageURL())
-                            ->method('post')
-                            ->fields([
-                                (new Para())->items([
-                                    (new Checkbox('disclaimer_ok'))
-                                        ->value(1)
-                                        ->label((new Label(__('I have read and understood the disclaimer and wish to continue anyway.'), Label::INSIDE_TEXT_AFTER))),
-                                ]),
-                                (new Para())->items([
-                                    (new Submit(['confirm'], __('Continue'))),
-                                    ... My::hiddenFields(),
-                                ]),
+                            (new Para())->items([
+                                (new Submit(['confirm'], __('Continue'))),
+                                ... My::hiddenFields(),
                             ]),
-                    ])
-                    ->render();
-                }
+                        ]),
+                ])
+                ->render();
             }
         }
 
@@ -321,6 +325,7 @@ class Manage extends Process
         } else {
             $public_root = App::blog()->host() . Path::clean(App::blog()->settings()->system->public_url);
         }
+
         $zip_name      = sprintf('fmu_backup_%s.zip', date('YmdHis'));
         $zip_file      = sprintf('%s/%s', App::blog()->publicPath(), $zip_name);
         $zip_uri       = sprintf('%s/%s', $public_root, $zip_name);
@@ -328,13 +333,15 @@ class Manage extends Process
 
         $c_data = 'Fake Me Up Checksum file - ' . date('d/m/Y H:i:s') . "\n\n" .
             'Dotclear version : ' . App::config()->dotclearVersion() . "\n\n";
-        if (is_countable($changes['removed']) ? count($changes['removed']) : 0) {
+        if ((is_countable($changes['removed']) ? count($changes['removed']) : 0) !== 0) {
             $c_data .= "== Removed files ==\n";
             foreach ($changes['removed'] as $k => $v) {
                 $c_data .= sprintf(" * %s\n", $k);
             }
+
             $c_data .= "\n";
         }
+
         if (file_exists($zip_file)) {
             @unlink($zip_file);
         }
@@ -343,9 +350,10 @@ class Manage extends Process
         if ($b_fp === false) {
             return false;
         }
+
         $b_zip = new Zip($b_fp);
 
-        if (is_countable($changes['changed']) ? count($changes['changed']) : 0) {
+        if ((is_countable($changes['changed']) ? count($changes['changed']) : 0) !== 0) {
             $c_data .= "== Invalid checksum files ==\n";
             foreach ($changes['changed'] as $k => $v) {
                 $name = substr($k, 2);
@@ -358,6 +366,7 @@ class Manage extends Process
                 }
             }
         }
+
         file_put_contents($checksum_file, $c_data);
         $b_zip->addFile($checksum_file, basename($checksum_file));
 
