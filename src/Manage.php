@@ -141,7 +141,7 @@ class Manage extends Process
                         $item,
                         (new Para())->items([
                             (new Link())
-                                ->href(App::backend()->url()->get('admin.update'))
+                                ->href(App::backend()->url()->get('upgrade.home'))
                                 ->text(__('Update Dotclear')),
                         ]),
                     ])

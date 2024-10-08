@@ -16,7 +16,7 @@ $this->registerModule(
     'Bruno Hondelatte',
     '4.2',
     [
-        'requires' => [['core', '2.28']],
+        'requires' => [['core', '2.29']],
         'type'     => 'plugin',
 
         'details'    => 'https://open-time.net/?q=fakemup',
