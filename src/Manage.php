@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief fakemeup, a plugin for Dotclear 2
  *
@@ -356,7 +357,7 @@ class Manage extends Process
         if ((is_countable($changes['changed']) ? count($changes['changed']) : 0) !== 0) {
             $c_data .= "== Invalid checksum files ==\n";
             foreach ($changes['changed'] as $k => $v) {
-                $name = substr($k, 2);
+                $name = substr((string) $k, 2);
                 $c_data .= sprintf(" * %s [expected: %s ; current: %s]\n", $k, $v['old'], $v['new']);
 
                 try {
