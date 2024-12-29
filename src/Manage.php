@@ -277,6 +277,7 @@ class Manage extends Process
         $same    = [];
         $removed = [];
 
+        $md5 = '';
         if ($contents !== false) {
             foreach ($contents as $digest) {
                 if (!preg_match('#^([\da-f]{32})\s+(.+?)$#', $digest, $m)) {
@@ -301,7 +302,7 @@ class Manage extends Process
         }
 
         # No checksum found in digests file
-        if (empty($md5)) {
+        if ($md5 === '') {
             throw new Exception(__('Invalid digests file.'));
         }
 
