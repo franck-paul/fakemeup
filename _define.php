@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief Fake Me Up, an upgrade helper plugin for Dotclear 2
  *
@@ -21,6 +22,6 @@ $this->registerModule(
 
         'details'    => 'https://open-time.net/?q=fakemup',
         'support'    => 'https://github.com/franck-paul/fakemup',
-        'repository' => 'https://raw.githubusercontent.com/franck-paul/fakemup/main/dcstore.xml',
+        'repository' => 'https://raw.githubusercontent.com/franck-paul/fakemeup/main/dcstore.xml',
     ]
 );
