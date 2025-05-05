@@ -15,9 +15,9 @@ $this->registerModule(
     'Fake Me Up',
     'Fakes Dotclear digest to force automatic updates',
     'Bruno Hondelatte',
-    '5.0.2',
+    '5.1',
     [
-        'date'     => '2003-08-13T13:42:00+0100',
+        'date'     => '2025-05-05T14:29:40+0200',
         'requires' => [['core', '2.29']],
         'type'     => 'plugin',
 
