@@ -1,11 +1,11 @@
 <modules xmlns:da="http://dotaddict.org/da/">
   <module id="fakemeup">
     <name>Fake Me Up</name>
-    <version>5.0.2</version>
+    <version>5.1</version>
     <author>Bruno Hondelatte</author>
     <desc>Fakes Dotclear digest to force automatic updates</desc>
-    <date>2003-08-13T13:42:00+0100</date>
-    <file>https://github.com/franck-paul/fakemeup/releases/download/5.0.2/plugin-fakemeup-5.0.2.zip</file>
+    <date>2025-05-05T14:29:40+0200</date>
+    <file>https://github.com/franck-paul/fakemeup/releases/download/5.1/plugin-fakemeup-5.1.zip</file>
     <da:dcmin>2.29</da:dcmin>
     <da:details>https://open-time.net/?q=fakemeup</da:details>
     <da:support>https://github.com/franck-paul/fakemeup</da:support>
