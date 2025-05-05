@@ -24,5 +24,6 @@ $this->registerModule(
         'details'    => 'https://open-time.net/?q=fakemup',
         'support'    => 'https://github.com/franck-paul/fakemup',
         'repository' => 'https://raw.githubusercontent.com/franck-paul/fakemeup/main/dcstore.xml',
+        'license'    => 'gpl2',
     ]
 );

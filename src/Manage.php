@@ -25,10 +25,12 @@ use Dotclear\Helper\Html\Form\Checkbox;
 use Dotclear\Helper\Html\Form\Div;
 use Dotclear\Helper\Html\Form\Form;
 use Dotclear\Helper\Html\Form\Label;
+use Dotclear\Helper\Html\Form\Li;
 use Dotclear\Helper\Html\Form\Link;
 use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Form\Text;
+use Dotclear\Helper\Html\Form\Ul;
 use Dotclear\Helper\L10n;
 use Exception;
 
@@ -158,14 +160,14 @@ class Manage extends Process
                     $block_changed = '';
                     if (self::$changes['changed'] !== []) {
                         foreach (self::$changes['changed'] as $k => $v) {
-                            $changed[] = (new Text('li', sprintf('%s [old:%s, new:%s]', $k, $v['old'], $v['new'])));
+                            $changed[] = (new Li())->text(sprintf('%s [old:%s, new:%s]', $k, $v['old'], $v['new']));
                         }
 
                         $block_changed = (new Div())->class('message')->items([
                             (new Para())->items([
                                 (new Text(null, __('The following files will have their checksum faked:'))),
                             ]),
-                            (new Para(null, 'ul'))->items($changed),
+                            (new Ul())->items($changed),
                         ])
                         ->render();
                     }
@@ -174,14 +176,14 @@ class Manage extends Process
                     $block_removed = '';
                     if (self::$changes['removed'] !== []) {
                         foreach (array_keys(self::$changes['removed']) as $k) {
-                            $removed[] = (new Text('li', $k));
+                            $removed[] = (new Li())->text($k);
                         }
 
                         $block_removed = (new Div())->class('message')->items([
                             (new Para())->items([
                                 (new Text(null, __('The following files digests will have their checksum cleaned:'))),
                             ]),
-                            (new Para(null, 'ul'))->items($removed),
+                            (new Ul())->items($removed),
                         ])
                         ->render();
                     }
