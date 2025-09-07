@@ -18,7 +18,7 @@ $this->registerModule(
     '5.1',
     [
         'date'     => '2025-05-05T14:29:40+0200',
-        'requires' => [['core', '2.29']],
+        'requires' => [['core', '2.36']],
         'type'     => 'plugin',
 
         'details'    => 'https://open-time.net/?q=fakemup',

@@ -18,7 +18,6 @@ namespace Dotclear\Plugin\fakemeup;
 use Dotclear\App;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Core\Backend\Page;
-use Dotclear\Core\Process;
 use Dotclear\Helper\File\Path;
 use Dotclear\Helper\File\Zip\Zip;
 use Dotclear\Helper\Html\Form\Checkbox;
@@ -32,10 +31,13 @@ use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\Html\Form\Ul;
 use Dotclear\Helper\L10n;
+use Dotclear\Helper\Process\TraitProcess;
 use Exception;
 
-class Manage extends Process
+class Manage
 {
+    use TraitProcess;
+
     // Properties
 
     /**
