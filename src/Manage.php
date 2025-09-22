@@ -16,8 +16,6 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\fakemeup;
 
 use Dotclear\App;
-use Dotclear\Core\Backend\Notices;
-use Dotclear\Core\Backend\Page;
 use Dotclear\Helper\File\Path;
 use Dotclear\Helper\File\Zip\Zip;
 use Dotclear\Helper\Html\Form\Checkbox;
@@ -117,15 +115,15 @@ class Manage
             return;
         }
 
-        Page::openModule(My::name());
+        App::backend()->page()->openModule(My::name());
 
-        echo Page::breadcrumb(
+        echo App::backend()->page()->breadcrumb(
             [
                 __('System')     => '',
                 __('Fake Me Up') => '',
             ]
         );
-        echo Notices::getNotices();
+        echo App::backend()->notices()->getNotices();
 
         $backup = App::config()->dotclearRoot() . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'digests.bak';
 
@@ -253,7 +251,7 @@ class Manage
             }
         }
 
-        Page::closeModule();
+        App::backend()->page()->closeModule();
     }
 
     // Private helper methods
