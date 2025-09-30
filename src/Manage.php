@@ -28,7 +28,6 @@ use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\Html\Form\Ul;
-use Dotclear\Helper\L10n;
 use Dotclear\Helper\Process\TraitProcess;
 use Exception;
 
@@ -69,7 +68,7 @@ class Manage
             'changed' => [],
             'removed' => [],
         ];
-        self::$helpus = L10n::getFilePath(My::path() . '/locales', 'helpus.html', App::lang()->getLang()) ?: '';
+        self::$helpus = App::lang()->getFilePath(My::path() . '/locales', 'helpus.html', App::lang()->getLang()) ?: '';
 
         $backup = App::config()->dotclearRoot() . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'digests.bak';
 
@@ -225,7 +224,7 @@ class Manage
                 ])
                 ->render();
             } else {
-                $disclaimer = L10n::getFilePath(My::path() . '/locales', 'disclaimer.html', App::lang()->getLang());
+                $disclaimer = App::lang()->getFilePath(My::path() . '/locales', 'disclaimer.html', App::lang()->getLang());
                 echo (new Para())->class('error')->items([
                     (new Text(null, __('Please read carefully the following disclaimer before proceeding!'))),
                 ])
