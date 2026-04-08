@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\fakemeup;
 
 use Dotclear\App;
+use Dotclear\Core\Backend\Menus;
 use Dotclear\Helper\Process\TraitProcess;
 
 class Backend
@@ -34,7 +35,7 @@ class Backend
         }
 
         if (is_writable(App::config()->digestsRoot())) {
-            My::addBackendMenuItem(App::backend()->menus()::MENU_SYSTEM);
+            My::addBackendMenuItem(Menus::MENU_SYSTEM);
         }
 
         return true;

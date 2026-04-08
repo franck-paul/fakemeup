@@ -38,9 +38,13 @@ class Manage
     // Properties
 
     /**
-     * @var array<string, array<string, mixed>>
+     * @var array{
+     *          same:    array<string, string>,
+     *          changed: array<string, array{old: string, new: string}>,
+     *          removed: array<string, bool>
+     *      }
      */
-    private static array $changes = [];
+    private static array $changes;
 
     private static string $helpus = '';
 
@@ -94,7 +98,7 @@ class Manage
 
                 rename(App::config()->digestsRoot(), $backup);
                 file_put_contents(App::config()->digestsRoot(), $digest);
-                self::$uri = self::backup(self::$changes);
+                self::$uri = self::backup();
             } elseif (isset($_POST['disclaimer_ok'])) {
                 self::$changes = self::check(App::config()->dotclearRoot(), App::config()->digestsRoot());
             }
@@ -263,7 +267,11 @@ class Manage
      *
      * @throws     Exception
      *
-     * @return     array<string, mixed>
+     * @return     array{
+     *                 same:    array<string, string>,
+     *                 changed: array<string, array{old: string, new: string}>,
+     *                 removed: array<string, bool>
+     *             }
      */
     private static function check(string $root, string $digests_file): array
     {
@@ -288,10 +296,9 @@ class Manage
                 $md5      = $m[1];
                 $filename = $root . '/' . $m[2];
 
-                # Invalid checksum
                 if (is_readable($filename)) {
-                    $md5_new = md5_file($filename);
-                    if ($md5 == $md5_new) {
+                    $md5_new = is_string($md5_new = md5_file($filename)) ? $md5_new : '';
+                    if ($md5 === $md5_new) {
                         $same[$m[2]] = $md5;
                     } else {
                         $changed[$m[2]] = ['old' => $md5,'new' => $md5_new];
@@ -317,16 +324,15 @@ class Manage
     /**
      * Backup digest
      *
-     * @param      array<string, mixed>        $changes  The changes
-     *
-     * @return     bool|string  False on error, zip URI on success
+     * @return     false|string  False on error, zip URI on success
      */
-    private static function backup(array $changes): bool|string
+    private static function backup(): false|string
     {
-        if (preg_match('#^http(s)?://#', (string) App::blog()->settings()->system->public_url)) {
-            $public_root = App::blog()->settings()->system->public_url;
+        $public_url = is_string($public_url = App::blog()->settings()->system->public_url) ? $public_url : '';
+        if (preg_match('#^http(s)?://#', $public_url)) {
+            $public_root = $public_url;
         } else {
-            $public_root = App::blog()->host() . Path::clean(App::blog()->settings()->system->public_url);
+            $public_root = App::blog()->host() . Path::clean($public_url);
         }
 
         $zip_name      = sprintf('fmu_backup_%s.zip', date('YmdHis'));
@@ -336,9 +342,9 @@ class Manage
 
         $c_data = 'Fake Me Up Checksum file - ' . date('d/m/Y H:i:s') . "\n\n" .
             'Dotclear version : ' . App::config()->dotclearVersion() . "\n\n";
-        if ((is_countable($changes['removed']) ? count($changes['removed']) : 0) !== 0) {
+        if (self::$changes['removed'] !== []) {
             $c_data .= "== Removed files ==\n";
-            foreach ($changes['removed'] as $k => $v) {
+            foreach (self::$changes['removed'] as $k => $v) {
                 $c_data .= sprintf(" * %s\n", $k);
             }
 
@@ -356,9 +362,9 @@ class Manage
 
         $b_zip = new Zip($b_fp);
 
-        if ((is_countable($changes['changed']) ? count($changes['changed']) : 0) !== 0) {
+        if (self::$changes['changed'] !== []) {
             $c_data .= "== Invalid checksum files ==\n";
-            foreach ($changes['changed'] as $k => $v) {
+            foreach (self::$changes['changed'] as $k => $v) {
                 $name = substr((string) $k, 2);
                 $c_data .= sprintf(" * %s [expected: %s ; current: %s]\n", $k, $v['old'], $v['new']);
 
