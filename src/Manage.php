@@ -328,8 +328,8 @@ class Manage
      */
     private static function backup(): false|string
     {
-        $public_url = is_string($public_url = App::blog()->settings()->system->public_url) ? $public_url : '';
-        if (preg_match('#^http(s)?://#', $public_url)) {
+        $public_url = App::blog()->settings()->get('system')->getStr('public_url', false);
+        if (preg_match('#^http(s)?://#', (string) $public_url)) {
             $public_root = $public_url;
         } else {
             $public_root = App::blog()->host() . Path::clean($public_url);
