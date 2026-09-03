@@ -288,8 +288,8 @@ class Manage
 
         $md5 = '';
         if ($contents !== false) {
-            foreach ($contents as $digest) {
-                if (!preg_match('#^([\da-f]{32})\s+(.+?)$#', $digest, $m)) {
+            foreach ($contents as $content) {
+                if (!preg_match('#^([\da-f]{32})\s+(.+?)$#', $content, $m)) {
                     continue;
                 }
 
@@ -360,7 +360,7 @@ class Manage
             return false;
         }
 
-        $b_zip = new Zip($b_fp);
+        $zip = new Zip($b_fp);
 
         if (self::$changes['changed'] !== []) {
             $c_data .= "== Invalid checksum files ==\n";
@@ -369,7 +369,7 @@ class Manage
                 $c_data .= sprintf(" * %s [expected: %s ; current: %s]\n", $k, $v['old'], $v['new']);
 
                 try {
-                    $b_zip->addFile(App::config()->dotclearRoot() . '/' . $name, $name);
+                    $zip->addFile(App::config()->dotclearRoot() . '/' . $name, $name);
                 } catch (Exception $e) {
                     $c_data .= $e->getMessage();
                 }
@@ -377,11 +377,11 @@ class Manage
         }
 
         file_put_contents($checksum_file, $c_data);
-        $b_zip->addFile($checksum_file, basename($checksum_file));
+        $zip->addFile($checksum_file, basename($checksum_file));
 
-        $b_zip->write();
+        $zip->write();
         fclose($b_fp);
-        $b_zip->close();
+        $zip->close();
 
         @unlink($checksum_file);
 
