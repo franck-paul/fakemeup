@@ -344,8 +344,9 @@ class Manage
             'Dotclear version : ' . App::config()->dotclearVersion() . "\n\n";
         if (self::$changes['removed'] !== []) {
             $c_data .= "== Removed files ==\n";
-            foreach (self::$changes['removed'] as $k => $v) {
-                $c_data .= sprintf(" * %s\n", $k);
+            $keys = array_keys(self::$changes['removed']);
+            foreach ($keys as $key) {
+                $c_data .= sprintf(" * %s\n", $key);
             }
 
             $c_data .= "\n";
