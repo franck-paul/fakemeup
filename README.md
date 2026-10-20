@@ -3,7 +3,7 @@
 [![Release](https://img.shields.io/github/v/release/franck-paul/fakemeup)](https://github.com/franck-paul/fakemeup/releases)
 [![Date](https://img.shields.io/github/release-date/franck-paul/fakemeup)](https://github.com/franck-paul/fakemeup/releases)
 [![Issues](https://img.shields.io/github/issues/franck-paul/fakemeup)](https://github.com/franck-paul/fakemeup/issues)
-[![License](https://img.shields.io/github/license/franck-paul/fakemeup)](https://github.com/franck-paul/fakemeup/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/franck-paul/fakemeup)](https://github.com/franck-paul/fakemeup/blob/main/LICENSE)
 
 Dotclear 2 plugin
 
