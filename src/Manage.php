@@ -329,7 +329,7 @@ class Manage
     private static function backup(): false|string
     {
         $public_url = App::blog()->settings()->get('system')->getStr('public_url', false);
-        if (preg_match('#^http(s)?://#', (string) $public_url)) {
+        if (preg_match('#^http(s)?://#', $public_url)) {
             $public_root = $public_url;
         } else {
             $public_root = App::blog()->host() . Path::clean($public_url);
@@ -366,7 +366,7 @@ class Manage
         if (self::$changes['changed'] !== []) {
             $c_data .= "== Invalid checksum files ==\n";
             foreach (self::$changes['changed'] as $k => $v) {
-                $name = substr((string) $k, 2);
+                $name = substr($k, 2);
                 $c_data .= sprintf(" * %s [expected: %s ; current: %s]\n", $k, $v['old'], $v['new']);
 
                 try {
