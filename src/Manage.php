@@ -289,7 +289,7 @@ class Manage
         $md5 = '';
         if ($contents !== false) {
             foreach ($contents as $content) {
-                if (!preg_match('#^([\da-f]{32})\s+(.+?)$#', $content, $m)) {
+                if (!(bool) preg_match('#^([\da-f]{32})\s+(.+?)$#', $content, $m)) {
                     continue;
                 }
 
@@ -329,7 +329,7 @@ class Manage
     private static function backup(): false|string
     {
         $public_url = App::blog()->settings()->get('system')->getStr('public_url', false);
-        if (preg_match('#^http(s)?://#', $public_url)) {
+        if ((bool) preg_match('#^http(s)?://#', $public_url)) {
             $public_root = $public_url;
         } else {
             $public_root = App::blog()->host() . Path::clean($public_url);
