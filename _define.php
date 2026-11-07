@@ -18,9 +18,9 @@ if (isset($this) && is_object($this) && method_exists($this, 'registerModule') &
         'Fake Me Up',
         'Fakes Dotclear digest to force automatic updates',
         'Bruno Hondelatte',
-        '7.0',
+        '7.1',
         [
-            'date'     => '2026-08-03T09:56:33+0200',
+            'date'     => '2026-11-07T16:50:54+0100',
             'requires' => [['core', '2.39']],
             'type'     => 'plugin',
 
